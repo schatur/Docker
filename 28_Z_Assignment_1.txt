@@ -10,30 +10,26 @@ The proof-of-concept should meet the following specifications:
 The first container should be called counter. It will generate some log data for testing by counting numbers.
 For the counter container, use the busybox image with the following command: sh -c 'i=0; while true; do echo "$i: $(date)" >> /var/log/test/1.log; i=$((i+1)); sleep 1; done'. This will write some test data to /var/log/test/1.log every second.
 
-vi Dockerfile
+$ vi Dockerfile
+$ docker build -t busybox:new .
+Sending build context to Docker daemon   2.56kB
+Step 1/2 : FROM busybox
+latest: Pulling from library/busybox
+91f30d776fb2: Pull complete
+Digest: sha256:9ddee63a712cea977267342e8750ecbc60d3aab25f04ceacfa795e6fce341793
+Status: Downloaded newer image for busybox:latest
+ ---> c7c37e472d31
+Step 2/2 : CMD sh -c 'i=0; while true; do echo "$i: $(date)" >> /var/log/test/1.log; i=$((i+1)); sleep 1; done'
+ ---> Running in da90f6f93f43
+Removing intermediate container da90f6f93f43
+ ---> f5aefc9ab9e1
+Successfully built f5aefc9ab9e1
+Successfully tagged busybox:new
 
-FROM busybox
-CMD sh -c 'i=0; while true; do echo "$i: $(date)" >> /var/log/test/1.log; i=$((i+1)); sleep 1; done'
-
-docker build -t busybox:new .
-
-docker run -d --name counter -v test-data:/var/log/test busybox:new
+$ docker run -d --name counter -v test-data:/var/log/test busybox:new
+31553ad490aa8ba0c330821790b86be86adb9d602ab7b09113624e96b61361a6
 
 Create a volume called test-data, and mount it to the counter container at /var/log/test. This volume will be shared with the fluentd container so that it can 
 read the test data.
 
 docker volume create test-data
-docker run -d --name fluentd -v test-data:/var/log/input \
--rw-r--r-- 1 root root    89 Jun  2 16:11 count.20200602104133_0.log
--rw-r--r-- 1 root root    89 Jun  2 16:11 count.20200602104134_0.log
--rw-r--r-- 1 root root    89 Jun  2 16:11 count.20200602104135_0.log
--rw-r--r-- 1 root root    89 Jun  2 16:11 count.20200602104136_0.log
-
-cat count.20200602104736_0.log
-
-
-
-
-
-
-Good luck!
