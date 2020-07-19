@@ -35,7 +35,7 @@ docker service create -d \
  -p 9773:8080 \
  --mount volume-driver=vieux/sshfs,source=nginx-config-vol,target=/etc/nginx/,volume-opt=sshcmd=testuser@172.31.19.175:/etc/docker/storage,volume-opt=password=password nginx:latest
 
-3/3: VolumeDriver.Mount: sshfs command execute failed: exit status 1 (read: Con… 
+
 5. Create a Docker volume called nginx-config-vol using the vieux/sshfs driver that stores data in /etc/docker/storage on the external storage server. You can use the cloud_user credentials to do this. Note that you should create the volume as part of the docker service create command so that the volume will be configured automatically on all swarm nodes that execute the service's tasks.
 
 docker volume create --driver vieux/sshfs -o sshcmd=ec2-user@172.31.40.255:/etc/docker/storage -o password=password nginx-config-vol 
