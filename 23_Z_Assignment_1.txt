@@ -15,17 +15,27 @@ Good luck!
 
 
 -------------------------
+$ docker swarm init
+Swarm initialized: current node (wwqz348tplr3ars27muflwdvi) is now a manager.
 
-1 > docker service scale products-fruit=5
+To add a worker to this swarm, run the following command:
 
+    docker swarm join --token SWMTKN-1-3frbpftos6u13subsee28708w6ezauasdv96mhp60wj1p9rnj2-4gww371ifzv6j5m0u2wbi7egf 172.17.0.36:2377
 
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions
 
+host01 $ docker swarm join --token SWMTKN-1-31kezav5e6cwejxjyu1uvpkdbdtcxvinu07seaonornc9vp7dr-eb0ajzs51iyq78lckxpjx80c4 172.17.0.48:2377
+This node joined a swarm as a worker.
+$ docker service create --name products-fruit -p 8080:80 linuxacademycontent/fruit-service:1.0.0
 
-2 >docker service create --name products-fruit -p 8080:80 linuxacademycontent/fruit-service:1.0.0
+$ docker service update --replicas 5 products-fruit
+$ docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE                                     PORTS
+s1m7zmskl0qa        products-fruit      replicated          5/5                 linuxacademycontent/fruit-service:1.0.0   *:8080->80/tcp
 
-docker service update --replicas 5 products-fruit
+$ docker service create --name products-vegetables -p 8081:80 linuxacademycontent/vegetable-service:1.0.0
 
-docker service create --name products-vegetables -p 8081:80 linuxacademycontent/vegetable-service:1.0.0
+$ docker service update --replicas 3 products-vegetables
 
-curl http://ip:8081
-docker service update --replicas 3 products-vegetables
+curl http://172.17.0.48:8080
+curl http://172.17.0.36:8081
