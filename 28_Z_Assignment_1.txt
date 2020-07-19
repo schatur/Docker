@@ -11,6 +11,9 @@ The first container should be called counter. It will generate some log data for
 For the counter container, use the busybox image with the following command: sh -c 'i=0; while true; do echo "$i: $(date)" >> /var/log/test/1.log; i=$((i+1)); sleep 1; done'. This will write some test data to /var/log/test/1.log every second.
 
 $ vi Dockerfile
+FROM busybox
+CMD sh -c 'i=0; while true; do echo "$i: $(date)" >> /var/log/test/1.log; i=$((i+1)); sleep 1; done'
+
 $ docker build -t busybox:new .
 Sending build context to Docker daemon   2.56kB
 Step 1/2 : FROM busybox
